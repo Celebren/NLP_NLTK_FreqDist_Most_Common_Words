@@ -78,12 +78,11 @@ for sentence in tokenized_sentences:
 
 
 '''
-I make the assumption that in this dataset, "da" will always be followed by "vinci" and "code", "harry" by "potter"
-"brokeback" by "mountain" and "mission" by "impossible". I loop through the list of words in the dataset and each time
+The folloing function loops through the list of words in the dataset and each time
 "da", "harry", "brokeback" and "mission" are found, they are replaced by "da vinci code", "harry potter", "brokeback 
-mountain" and "mission impossible" respectivelly. To be safe, I also asssume that "harry" and "mission" are not always
-followed by "potter" and "impossible" so those are only replaced if the string in the next index position matches my
-expectations. Then the strings in the following indexes that were added to the new string, are removed from the list.
+mountain" and "mission impossible" respectivelly, if the next strings in the list match the assumptions that "da" will
+be followed by "vinci" and "code" etc. Then the strings in the following indexes that were added to the new string, are
+removed from the list. Calling this function is optional and can be commented out.
 '''
 
 
@@ -93,10 +92,12 @@ def words_combiner(function_words_list):
     for function_word in function_words_list:
     
         if function_word == "da":
-            function_word = "da vinci code"
-            function_words_list[words_list_index] = function_word
-            function_words_list.remove(function_words_list[words_list_index + 1])
-            function_words_list.remove(function_words_list[words_list_index + 1])
+            if function_words_list[words_list_index + 1] == "vinci" and \
+                    function_words_list[words_list_index + 2] == "code":
+                function_word = "da vinci code"
+                function_words_list[words_list_index] = function_word
+                function_words_list.remove(function_words_list[words_list_index + 1])
+                function_words_list.remove(function_words_list[words_list_index + 1])
 
         if function_word == "harry":
             if function_words_list[words_list_index + 1] == "potter":
@@ -105,9 +106,10 @@ def words_combiner(function_words_list):
                 function_words_list.remove(function_words_list[words_list_index + 1])
 
         if function_word == "brokeback":
-            function_word = "brokeback mountain"
-            function_words_list[words_list_index] = function_word
-            function_words_list.remove(function_words_list[words_list_index + 1])
+            if function_words_list[words_list_index + 1] == "mountain":
+                function_word = "brokeback mountain"
+                function_words_list[words_list_index] = function_word
+                function_words_list.remove(function_words_list[words_list_index + 1])
 
         if function_word == "mission":
             if function_words_list[words_list_index + 1] == "impossible":
@@ -122,34 +124,7 @@ def words_combiner(function_words_list):
 
 # run combiner function to combine names and movie titles in dataset
 # OR comment out to get results for individual words only
-# Running this method REDUCES EXECUTION TIME
-#words_list = words_combiner(words_list)
-
-# create a copy of the words list that will be iterrated through and stopwords will be removed
-filtered_word_list = words_list[:]
-# iterate through the list
-for word in filtered_word_list:  # iterate over word_list
-    # the "word" string needs to be decoded with ISO-8859-1 as there are unexpected characters in the data that
-    # prevent execution without decoding
-    if word.decode('ISO-8859-1') in stopwords_list:
-        # remove any word that exists in the stopwords list
-        filtered_word_list.remove(word)
-
-# repeat for words in custom list
-for word in filtered_word_list:
-    if word in custom_stopwords_list:
-        filtered_word_list.remove(word)
-
-# create nltk.FreqDist() of the final clean list of words with all unwanted words and symbols removed
-fdist = FreqDist(filtered_word_list)
-# create a list of the 20 most common words in the data set
-most_common_words = fdist.most_common(20)
-
-# convert the list of most common words into a data frame for nicer display.
-most_common_df = pd.DataFrame(most_common_words, columns=["word", "occurences"])
-# print the dataframe
-print most_common_df
-
+# Running this method INCREASES EXECUTION TIME
 words_list = words_combiner(words_list)
 
 # create a copy of the words list that will be iterrated through and stopwords will be removed
@@ -177,10 +152,11 @@ most_common_df = pd.DataFrame(most_common_words, columns=["word", "occurences"])
 # print the dataframe
 print most_common_df
 
+
 '''
 ------------------------------------------------------------------------------------------------------------------------
 Answer to second question:
-- Most common word without combined words: "harry", occuring 2091 times
+- Most common word without combined words: "potter", occuring 2091 times
 - Most common string with combined words: "harry potter", occuring 2086 times
 The difference in occurences is because not every "harry" occurence is followed by "potter"
 ------------------------------------------------------------------------------------------------------------------------
