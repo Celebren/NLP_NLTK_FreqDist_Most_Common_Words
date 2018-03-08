@@ -4,6 +4,7 @@ from nltk.tokenize import word_tokenize
 from nltk import FreqDist
 from nltk.corpus import stopwords
 
+
 # Uncomment the following lines if "Resource not found" error is returned
 # import nltk
 # nltk.download('stopwords')
@@ -52,6 +53,7 @@ classic Python data collections. Pandas also contain useful built in functions.
 df = pd.DataFrame(two_dimensional_list, columns=["score", "text"])
 
 # define a list of non-letter characters to be removed from the data frame
+
 pattern_list_of_unwanted_characters = [
     '\,', '\.', '\\n', ':', '\*', '\(', '\)', "'", '\!', '\?', '"', '\/', '\~', '\-',
     '\[', '\]', '\=', '\&', '\<', '\>', '\^', '\$', '\\xa0', '\\x92', u'\u2018',
@@ -59,23 +61,26 @@ pattern_list_of_unwanted_characters = [
 ]
 
 # using pandas' replace() function, replace unwanted characters from the list defined earlier, with an empty string
+
 df = df.replace(pattern_list_of_unwanted_characters, '', regex=True).astype(str)
 
 # convert all capital letters to lower case using pandas' apply()
 df = df.apply(lambda x: x.astype(str).str.lower())
 
 # now that the dataset is clean of unwanted characters and all capital letters are converted into lowercase,
-# "flatten" the dataframe into a simple list that will be tokenised and searched through for most common words
+# "flatten" the dataframe into a simple list that will be tokenized and searched through for most common words
 flat_list = df['text'].values.flatten()
 
 # import NLTK's stopwords into a list.
 stopwords_list = stopwords.words('english')
+
 # create a list of additional common stopwords that are missed by the NLTK stopwords list
 # due to dataset's character encoding. These words were identified by running the NLTK FreqDist most_common() function
 custom_stopwords_list = ["i", "a", "the", "it", "is", "one", "3", "am"]
 
-# loop through the flat list and apply NLTK's tokenizer to tokenise each word in each sentence
+# loop through the flat list and apply NLTK's tokenizer to tokenize each word in each sentence
 tokenized_sentences = [word_tokenize(i) for i in flat_list]
+
 # take each tokenized word in the entire data set and add it to a new list. This list will be searched
 for sentence in tokenized_sentences:
     for word in sentence:
@@ -161,8 +166,8 @@ print most_common_df
 '''
 ------------------------------------------------------------------------------------------------------------------------
 Answer to second question:
-- Most common word without combined words: "potter", occuring 2091 times
-- Most common string with combined words: "harry potter", occuring 2086 times
-The difference in occurences is because not every "harry" occurence is followed by "potter"
+- Most common word without combined words: "potter", occurring 2091 times
+- Most common string with combined words: "harry potter", occurring 2086 times
+The difference in occurrences is because not every "harry" occurrence is followed by "potter"
 ------------------------------------------------------------------------------------------------------------------------
 '''
